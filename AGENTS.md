@@ -77,7 +77,7 @@ when needed; add no placeholder documents, speculative products, or empty API se
 
 - Build host verified: Linux `x86_64` (`x64`). macOS/Windows are not verified; the pinned
   Doxygen release is the Linux x86_64 build.
-- Network is required for the first `eng/restore.sh` (doxygen.nl, GitHub, the npm git
+- Network is required for the first `eng/restore.sh` (the pinned GitHub release asset, GitHub, the npm git
   dependency). Validation contacts no external links and runs a loopback HTTP smoke only.
 - No global or system Doxygen/npm installation is permitted. The Doxygen binary lives under
   ignored `artifacts/tools`; the theme under ignored `node_modules`.
