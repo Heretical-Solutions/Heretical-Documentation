@@ -64,6 +64,16 @@ renews the `github.io` certificate.
   repository is private, but the generated documentation will be public. Approval of the
   source commit alone is not disclosure approval for deployment.
 
+## Verified initial deployment
+
+Actions run `43540473334` validated and deployed portal source
+`bbf9c69332648bd22b0035d6b17ee9d447b93f22`, with superproject input
+`ba131fe6838cba3411b0f709be5aaa754929b27f` and blog input
+`1c505359e5b4afb9323906b4b4589b00e676f57f`. The Pages endpoint is live at the URL above.
+The workflow does not itself require a separate reviewer approval: required reviewers are
+configured in the `github-pages` environment and must be checked in the control plane when
+an explicit approval hold is required.
+
 ## Procedure
 
 1. Open a pull request. Same-repository CI runs `eng/restore.sh` and `eng/validate.sh` and

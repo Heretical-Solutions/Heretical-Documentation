@@ -4,9 +4,9 @@ Aggregated documentation portal for the Heretical workspace, built with
 [Doxygen](https://www.doxygen.nl/) and the [Doxygen Awesome](https://github.com/jothepro/doxygen-awesome-css)
 theme, published as a prebuilt static site on GitHub project Pages.
 
-**Status:** initial implementation, built and validated locally. Registration as a
-superproject submodule is pending a reviewed source commit and separate authorization. No
-publication has occurred from this state.
+**Status:** registered as a superproject submodule; local and GitHub Actions validation pass,
+and the initial site is deployed. The superproject's exact-SHA dispatch procedure refreshes
+the aggregated workspace documentation after each registration update.
 
 | Field | Value |
 |---|---|

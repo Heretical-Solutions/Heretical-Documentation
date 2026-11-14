@@ -148,7 +148,9 @@ the pinned inputs.
   resolve in the portal.
 - Links that fall outside the published set (excluded same-repo files and cross-repository
   mounts such as `sites/blog/...`) are rewritten **only in the generated intermediate** to
-  canonical exact-revision source URLs. Canonical sources are never edited for the portal.
+  canonical exact-revision source URLs. A registered portal gitlink in a workspace catalog
+  resolves to this repository at that exact revision, not a superproject directory URL.
+  Canonical sources are never edited for the portal.
 - Every intended input must produce an output. `eng/checks.mjs` fails on any published
   document that Doxygen silently dropped (for example, a `README.md`/`index.md` basename,
   which Doxygen special-cases; the assembler renames such basenames and fixes links).

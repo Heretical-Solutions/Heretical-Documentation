@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 
 const PORTAL_ROOT = path.resolve(import.meta.dirname, '..');
 const MANIFEST_PATH = path.join(PORTAL_ROOT, 'eng', 'sources.manifest.json');
@@ -134,7 +134,11 @@ function rewriteOne(rawInner, ctx, rewrites) {
       );
       const ref = ctx.canonicalRef;
       const urlBase = `${ctx.web}/${kindSeg}/${ref}`;
-      if (mount) {
+      if (ctx.portalGitlink && (rootRel === 'sites/documentation' || rootRel.startsWith('sites/documentation/'))) {
+        const mRel = rootRel === 'sites/documentation' ? '' : rootRel.slice('sites/documentation/'.length);
+        newTarget = `https://github.com/Heretical-Solutions/Heretical-Documentation/${kindSeg}/${ctx.portalGitlink}${mRel ? '/' + mRel : ''}${frag}`;
+        reason = 'cross-repo-gitlink';
+      } else if (mount) {
         const mSrc = ctx.byId.get(mount.sourceId);
         const mRef = ctx.canonicalRefsById.get(mount.sourceId);
         const mRel = rootRel === mount.sourcePath ? '' : rootRel.slice(mount.sourcePath.length + 1);
@@ -208,7 +212,7 @@ function gitInfo() {
   return {
     revision: head ?? 'unborn (pre-first-commit)',
     branch: branch ?? 'unknown',
-    dirty: porcelain ? porcelain.length > 0 : null,
+    dirty: porcelain === null ? null : porcelain.length > 0,
   };
 }
 
@@ -288,6 +292,21 @@ function main() {
     canonicalRefsById.set(s.id, r.mode === 'dispatch-sha' && IS_SHA.test(r.actualCommit) ? r.actualCommit : s.commit);
   }
 
+  // A workspace catalog link into this portal must use the registered portal
+  // gitlink, not a superproject blob URL for a directory that Git stores as a
+  // submodule. Read only the source checkout's index; never an ambient sibling.
+  const portalGitlinksById = new Map();
+  for (const s of restore.sources) {
+    const root = path.resolve(PORTAL_ROOT, s.sourcePath);
+    try {
+      const index = execFileSync('git', ['-C', root, 'ls-files', '--stage', '--', 'sites/documentation'], { encoding: 'utf8' });
+      const match = index.match(/^160000 ([0-9a-f]{40}) \d+\tsites\/documentation$/m);
+      if (match) portalGitlinksById.set(s.id, match[1]);
+    } catch {
+      // An ordinary source directory or an older revision has no portal gitlink.
+    }
+  }
+
   // Reset the assembled tree.
   fs.rmSync(ASSEMBLED, { recursive: true, force: true });
   fs.mkdirSync(ASSEMBLED, { recursive: true });
@@ -356,6 +375,7 @@ function main() {
       mounts,
       byId,
       canonicalRefsById,
+      portalGitlink: portalGitlinksById.get(entry.sourceId) || null,
       fileExists: (rel) => {
         const p = path.join(PORTAL_ROOT, r.sourcePath, rel);
         return fs.existsSync(p) && fs.statSync(p).isFile();
@@ -376,7 +396,7 @@ function main() {
     total: rewrites.length,
     inSet: rewrites.filter((r) => r.reason === 'in-set' || r.reason === 'portal-in-set').length,
     outOfSet: rewrites.filter((r) => r.reason === 'out-of-set').length,
-    crossRepo: rewrites.filter((r) => r.reason === 'cross-repo').length,
+    crossRepo: rewrites.filter((r) => r.reason.startsWith('cross-repo')).length,
     unresolved: rewrites.filter((r) => r.reason === 'unresolved').length,
   };
 

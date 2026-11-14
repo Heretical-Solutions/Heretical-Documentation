@@ -45,7 +45,17 @@ Validated with this combination, from a wiped `artifacts/` and `node_modules/`:
 - The theme's clean HTTPS restore succeeds with an empty home and system/global Git
   configuration disabled; no SSH key is needed. The credential-free structural check also
   passes in that environment. Anonymous restore of the private superproject correctly fails;
-  its CI read-only-token path has not run in GitHub Actions and remains a live check.
+  CI supplies the scoped read-only source credential instead.
+- GitHub Actions run `43540473334` validated portal revision
+  `bbf9c69332648bd22b0035d6b17ee9d447b93f22` using the `WORKSPACE_READ_TOKEN` source
+  credential, uploaded `artifacts/site`, and deployed the initial site. The published
+  provenance records superproject `ba131fe6838cba3411b0f709be5aaa754929b27f` and blog
+  `1c505359e5b4afb9323906b4b4589b00e676f57f`.
+- Firefox desktop and mobile screenshots were inspected locally; interactive search,
+  light/dark behavior, and browser-console acceptance remain manual checks.
+- Registered-workspace local preview passes: 30 documents, 1306 internal references,
+  272 fragment references, and zero Doxygen diagnostics. Registered portal-gitlink links
+  resolve to the portal repository, not a superproject directory URL.
 
 ## The whitespace hazard and the sandbox
 

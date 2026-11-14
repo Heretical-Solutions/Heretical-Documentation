@@ -59,8 +59,9 @@ literal token in shell history or documentation. The theme lockfile uses public 
    (and resolve in Doxygen because `MARKDOWN_ID_STYLE = GITHUB` reproduces the source's
    GitHub-slug anchors). Links that fall outside the published set — excluded same-repo
    files and cross-repository mounts such as `sites/blog/...` — are rewritten **only in the
-   intermediate** to canonical exact-revision source URLs. Canonical sources are never
-   edited.
+   intermediate** to canonical exact-revision source URLs. A registered portal gitlink in
+   the workspace catalog resolves to this portal's own canonical repository at that exact
+   revision, never a superproject directory URL. Canonical sources are never edited.
 4. Emits `artifacts/coverage-input.json` and `artifacts/link-rewrites.json`.
 
 Inline code spans and fenced code blocks are masked before link rewriting, so example paths

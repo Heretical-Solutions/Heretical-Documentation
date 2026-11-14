@@ -57,6 +57,7 @@ const findings = {
   missingRequired: [],
   hygienePaths: [],
   hygieneContent: [],
+  misdirectedGitlinks: [],
   elfFiles: [],
 };
 const counts = { files: 0, html: 0, internalRefs: 0, externalRefs: 0, fragmentRefs: 0, pages: 0 };
@@ -68,7 +69,13 @@ function checkRefs(rel, html) {
   for (const m of html.matchAll(REF_ATTR_RE)) {
     const raw = m[1].trim();
     if (raw === '') continue;
-    if (EXTERNAL_RE.test(raw)) { counts.externalRefs++; continue; }
+    if (EXTERNAL_RE.test(raw)) {
+      counts.externalRefs++;
+      if (/^https:\/\/github\.com\/Heretical-Solutions\/Heretical-Development\/(?:blob|raw)\/[0-9a-f]{40}\/sites\/documentation(?:[/?#]|$)/.test(raw)) {
+        findings.misdirectedGitlinks.push({ file: rel, ref: raw });
+      }
+      continue;
+    }
     if (raw.startsWith('#')) {
       counts.fragmentRefs++;
       const frag = raw.slice(1);
