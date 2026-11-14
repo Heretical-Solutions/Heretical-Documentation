@@ -6,7 +6,8 @@ replace, the superproject's aggregate notices or any product's own notices.
 Exact resolved versions come from `package-lock.json` (theme), `eng/lib/common.sh`
 (Doxygen pin), and `eng/sources.manifest.json` (source revisions). The generated
 [provenance page](https://heretical-solutions.github.io/Heretical-Documentation/md_provenance.html)
-records the revisions used by a specific build.
+records public component revisions. Private workspace source revisions remain in
+internal build/compatibility records and are withheld from public output.
 
 ## Distribution model
 
@@ -59,14 +60,15 @@ validation on the build host. None of their code is distributed in the payload.
 ## Aggregated documentation (canonical source, exact revisions)
 
 The portal publishes selected documents that remain canonical in their owning repositories.
-Each is aggregated at an exact commit recorded in `eng/sources.manifest.json`; relative links
-and media inside a repository are preserved in the generated intermediate, and links that
-fall outside the published set resolve to canonical exact-revision source URLs.
+Each is aggregated at an exact commit recorded in the internal restore metadata. Relative links
+and media inside a repository are preserved in the generated intermediate. Public source
+links remain available; out-of-set private-source links resolve to the portal's source
+availability note rather than exposing private repository URLs.
 
-| Source | Repository | Commit | License of source |
-|---|---|---|---|
-| Heretical Development (workspace) | <https://github.com/Heretical-Solutions/Heretical-Development> | `ba131fe6838cba3411b0f709be5aaa754929b27f` | MIT (superproject `LICENSE`) |
-| Heretical Development Blog | <https://github.com/Heretical-Solutions/Heretical-Blog> | `1c505359e5b4afb9323906b4b4589b00e676f57f` | MIT (blog `LICENSE`) |
+| Source | Public reference | License of source |
+|---|---|---|
+| Heretical Development workspace | [Public documentation portal](https://heretical-solutions.github.io/Heretical-Documentation/); private source revision withheld | MIT (workspace `LICENSE`) |
+| Heretical Development Blog | <https://github.com/Heretical-Solutions/Heretical-Blog> at `1c505359e5b4afb9323906b4b4589b00e676f57f` | MIT (blog `LICENSE`) |
 
 Aggregating a document does not transfer ownership: the canonical text stays in the source
 repository, and this portal reproduces it at a pinned revision. Both source repositories use

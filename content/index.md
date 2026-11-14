@@ -13,7 +13,7 @@ publication.
 ## Workspace
 
 Architecture, contribution rules, policies, and the repository catalog maintained in the
-[Heretical Development superproject](https://github.com/Heretical-Solutions/Heretical-Development).
+Heretical Development workspace.
 
 ### Architecture
 
