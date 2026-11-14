@@ -1,0 +1,27 @@
+# Heretical documentation portal — main entry configuration.
+#
+# Use eng/build.sh, which restores the pinned generator and runs this file in
+# its space-free build sandbox. Do not substitute an ambient system Doxygen.
+#
+# The sandbox mirrors the repository's relative layout and applies the documented
+# local-preview source selection. All paths here are relative to that layout, so
+# nothing machine-specific is embedded in tracked configuration.
+
+@INCLUDE = doxygen/common.cfg
+@INCLUDE = doxygen/html.cfg
+
+# Assembled, link-resolved intermediate tree produced by eng/assemble.mjs from
+# the pinned source revisions plus portal-owned content and provenance.
+INPUT                  = artifacts/intermediates
+FILE_PATTERNS          = *.md
+STRIP_FROM_PATH        = artifacts/intermediates
+USE_MDFILE_AS_MAINPAGE = artifacts/intermediates/index.md
+
+OUTPUT_DIRECTORY       = artifacts/doxygen/main
+WARN_LOGFILE           = artifacts/doxygen/main/warn.log
+
+# XML is generated only to build the authoritative source-to-page coverage map;
+# it stays under artifacts and is never copied into the published payload.
+# XML_OUTPUT is relative to OUTPUT_DIRECTORY.
+GENERATE_XML           = YES
+XML_OUTPUT             = xml

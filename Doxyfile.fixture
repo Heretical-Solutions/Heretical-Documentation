@@ -1,0 +1,22 @@
+# Heretical documentation portal — C# extraction fixture.
+#
+# Non-published. Proves Doxygen extracts a documented type and member from C#
+# source alone, with no dotnet, MSBuild, Unity, .asmdef resolution, generated
+# Unity .csproj, or stub assemblies. The referenced UnityEngine/MonoBehaviour
+# types are intentionally left unresolved: Doxygen is a source scanner, not a
+# compiler.
+#
+# Output stays under artifacts/fixture and is never copied into artifacts/site.
+# eng/validate.sh asserts the documented type/member appear in this output and
+# that the fixture tree is absent from the published payload.
+
+@INCLUDE = doxygen/common.cfg
+
+INPUT                  = tests/fixture
+FILE_PATTERNS          = *.cs
+STRIP_FROM_PATH        = tests/fixture
+OUTPUT_DIRECTORY       = artifacts/fixture
+WARN_LOGFILE           = artifacts/fixture/warn.log
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+GENERATE_TREEVIEW      = NO

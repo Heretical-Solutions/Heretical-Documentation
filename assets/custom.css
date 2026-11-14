@@ -1,0 +1,21 @@
+/* Heretical documentation portal — minimal branding overrides.
+ *
+ * Kept separate from the pinned Doxygen Awesome theme and intentionally small:
+ * only the accent colour and the sidebar title treatment are adjusted so the
+ * portal reads as a Heretical site. Layout, responsiveness, and light/dark
+ * behaviour come from the upstream theme unmodified.
+ */
+
+:root {
+  --primary-color: #7a1f2b;            /* Heretical maroon accent (light mode) */
+}
+
+html[dark] {
+  --primary-color: #d24b5c;            /* lighter accent for dark mode */
+}
+
+/* Project title in the sidebar/header. */
+#projectname {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}

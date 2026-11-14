@@ -1,0 +1,11 @@
+# Reviewed Doxygen warning allow list.
+#
+# One fixed-substring pattern per line (blank lines and lines starting with '#'
+# are ignored). A warning line produced by Doxygen is tolerated only if it
+# contains one of these substrings AFTER the machine-path prefixes are stripped.
+# Every warning must be justified here in the same commit that introduces it;
+# there are no blanket suppressions. Errors are never tolerated.
+#
+# Warning format after normalization: "<relative-source>:<line>: warning: <text>"
+#
+# Current build produces zero warnings, so this list is intentionally empty.

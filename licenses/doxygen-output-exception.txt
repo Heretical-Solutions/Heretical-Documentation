@@ -1,0 +1,29 @@
+Doxygen output exception
+=======================
+
+Upstream source: https://www.doxygen.nl/license.html
+Generator version: 1.18.0
+Generator source revision: 8e760943e5d9581a444cf327f43a0b4d20d29482
+
+Doxygen
+Copyright (C) 1997-2026 by Dimitri van Heesch.
+
+Doxygen is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+Doxygen is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+Documents produced by doxygen are derivative works derived from the
+input used in their production; they are not affected by this license.
+
+The GNU GPL version 2 text is retained separately in doxygen-LICENSE.txt.
+This file records the upstream copyright and output exception; it does not
+replace the tool's GPL license or license any third-party support assets.

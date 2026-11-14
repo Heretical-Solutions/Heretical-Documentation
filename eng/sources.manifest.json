@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "description": "Exact source revisions and explicit coverage mapping for the Heretical documentation portal. The default restore clones each commit under ignored artifacts/sources and verifies the SHA. Portal content is never sourced from ambient sibling checkouts or moving branches.",
+  "intermediateRoot": "artifacts/intermediates",
+  "mounts": [
+    { "sourcePath": "sites/blog", "sourceId": "blog", "note": "Superproject submodule mount for the registered blog; cross-repository links under this path resolve to the blog canonical source." }
+  ],
+  "linkOverrides": [],
+  "sources": [
+    {
+      "id": "superproject",
+      "name": "Heretical Development",
+      "repository": "https://github.com/Heretical-Solutions/Heretical-Development.git",
+      "web": "https://github.com/Heretical-Solutions/Heretical-Development",
+      "commit": "ba131fe6838cba3411b0f709be5aaa754929b27f",
+      "ref": "develop",
+      "destPrefix": "workspace",
+      "files": [
+        { "src": "CONTRIBUTING.md" },
+        { "src": "THIRD_PARTY_NOTICES.md" },
+        { "src": "docs/architecture/overview.md" },
+        { "src": "docs/architecture/dependency-graph.md" },
+        { "src": "docs/repositories.md" },
+        { "src": "docs/repository-layout.md" },
+        { "src": "docs/supporting-products.md" },
+        { "src": "docs/documentation-site.md" },
+        { "src": "docs/development-blog.md" },
+        { "src": "docs/dependencies.md" },
+        { "src": "docs/build.md" },
+        { "src": "docs/testing.md" },
+        { "src": "docs/deployment.md" },
+        { "src": "docs/packaging.md" },
+        { "src": "docs/versioning.md" },
+        { "src": "docs/compatibility.md" },
+        { "src": "docs/releases.md" },
+        { "src": "docs/licensing.md" },
+        { "src": "docs/infrastructure/kan.md" },
+        { "src": "docs/infrastructure/ntfy.md" },
+        { "src": "docs/infrastructure/woodpecker.md" }
+      ]
+    },
+    {
+      "id": "blog",
+      "name": "Heretical Development Blog",
+      "repository": "https://github.com/Heretical-Solutions/Heretical-Blog.git",
+      "web": "https://github.com/Heretical-Solutions/Heretical-Blog",
+      "commit": "1c505359e5b4afb9323906b4b4589b00e676f57f",
+      "ref": "master",
+      "destPrefix": "products/blog",
+      "files": [
+        { "src": "README.md", "dest": "overview.md" },
+        { "src": "docs/requirements.md" },
+        { "src": "docs/build.md" },
+        { "src": "docs/quickstart.md" },
+        { "src": "docs/editorial.md" },
+        { "src": "docs/deployment.md" },
+        { "src": "docs/compatibility.md" }
+      ]
+    }
+  ]
+}

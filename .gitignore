@@ -1,0 +1,22 @@
+# Generated aggregation, restoration, and build output.
+# Everything the authoritative commands produce lives here and is never committed.
+artifacts/
+
+# Restored npm theme dependency (populated by `npm ci` from the committed lock file).
+node_modules/
+
+# npm logs and cache artefacts
+npm-debug.log*
+.npm/
+
+# Editor and operating-system noise
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# NOTE: package.json and package-lock.json are deliberately tracked so the theme
+# pin (exact git commit) is reproducible. The Doxygen binary, restored source
+# checkouts, intermediates, and generated HTML are never committed.

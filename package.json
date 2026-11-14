@@ -1,0 +1,10 @@
+{
+  "name": "heretical-documentation-portal",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Heretical Documentation portal: Doxygen aggregation of workspace and product documentation.",
+  "license": "MIT",
+  "dependencies": {
+    "@jothepro/doxygen-awesome-css": "git+https://github.com/jothepro/doxygen-awesome-css.git#46483f1e5a70ffb9ecd3b82d0a1cd1b24edf13da"
+  }
+}
