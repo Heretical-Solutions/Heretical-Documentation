@@ -32,7 +32,7 @@ cd "$PORTAL_ROOT"
 # system binary or a moving branch.
 # ---------------------------------------------------------------------------
 DOXYGEN_VERSION="1.18.0"
-DOXYGEN_URL="https://www.doxygen.nl/files/doxygen-1.18.0.linux.bin.tar.gz"
+DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_1_18_0/doxygen-1.18.0.linux.bin.tar.gz"
 DOXYGEN_SHA256="14fa81bdc34171edb5f1f02b1d60e74802f0439b77fa44e592565d517d72df90"
 
 THEME_PACKAGE="@jothepro/doxygen-awesome-css"

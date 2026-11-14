@@ -48,7 +48,7 @@ Doxygen binary and the theme live entirely under ignored `artifacts/` and `node_
 No service is required beyond the restore-time download and source hosts, plus GitHub for
 publication.
 
-- **doxygen.nl**, **github.com**, and the **npm git dependency** are contacted by
+- **The pinned GitHub release asset** and the **npm git dependency** are contacted by
   `eng/restore.sh` on a cold cache.
 - **GitHub** hosts the repository, runs the Actions Pages workflow, and serves Pages.
   Publication and Pages settings are outside the build.
