@@ -146,17 +146,20 @@ the pinned inputs.
   ordinary relative links and co-located media resolve. `MARKDOWN_ID_STYLE = GITHUB` makes
   heading anchors match the GitHub slugs used by the source, so `file.md#section` links
   resolve in the portal.
-- Links that fall outside the published set (excluded same-repo files and cross-repository
-  mounts such as `sites/blog/...`) are rewritten **only in the generated intermediate** to
-  canonical exact-revision source URLs. A registered portal gitlink in a workspace catalog
-  resolves to this repository at that exact revision, not a superproject directory URL.
+- Links that fall outside the published set resolve **only in the generated intermediate**.
+  Public-source links retain canonical exact-revision URLs. A source marked `public: false`
+  never emits a private repository URL or full private source SHA: out-of-set links resolve
+  to the portal-local source-availability page, and private revisions are redacted from the
+  intermediate/provenance while exact values remain in internal restore/compatibility
+  records. A registered portal gitlink resolves to this public repository, never a private
+  superproject directory URL.
   Canonical sources are never edited for the portal.
 - Every intended input must produce an output. `eng/checks.mjs` fails on any published
   document that Doxygen silently dropped (for example, a `README.md`/`index.md` basename,
   which Doxygen special-cases; the assembler renames such basenames and fixes links).
 - Products that publish no library API (for example, the blog) get overview and guides only,
   never a fabricated API section, product page, namespace index, or member list.
-- The generated provenance page records the actual revisions, toolchain, coverage, and link
+- The generated provenance page records public component revisions, toolchain, coverage and link
   rewrites of each build.
 - The C# fixture proves extraction only. Extraction never implies compilation, runtime
   behaviour, or Unity/engine compatibility, and the fixture output is never published.

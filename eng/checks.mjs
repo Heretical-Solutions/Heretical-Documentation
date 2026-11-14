@@ -136,6 +136,7 @@ function checkCoverage() {
   const required = [
     'index.md',
     'provenance.md',
+    'source-availability.md',
     'workspace/docs/architecture/overview.md',
     'workspace/CONTRIBUTING.md',
     'workspace/docs/compatibility.md',
@@ -190,6 +191,9 @@ const CREDENTIAL = [
   /\bxox[bap/P]-[A-Za-z0-9-]{10,}/,
   /\bAKIA[0-9A-Z]{16}\b/,
 ];
+const PRIVATE_SOURCE_URL = /https?:\/\/github\.com\/Heretical-Solutions\/Heretical-Development(?:[/?#]|$)/i;
+const PRIVATE_REVISIONS = new Set(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')).sources.filter((s) => s.public === false).map((s) => s.commit));
+const MACHINE_PATH = /(?:\/SSD1\/|\/home\/[A-Za-z0-9._-]+\/|\/Users\/[A-Za-z0-9._-]+\/|\/tmp\/kilo(?:\/|\b)|[A-Za-z]:\\Users\\)/;
 const TEXT_EXT = new Set(['.html', '.css', '.js', '.json', '.xml', '.svg', '.txt', '.md', '.map', '']);
 
 function isText(rel) {
@@ -219,6 +223,11 @@ function checkHygiene() {
     for (const re of CREDENTIAL) {
       if (re.test(content)) findings.hygieneContent.push({ file: rel, reason: `credential pattern ${re.source}` });
     }
+    if (PRIVATE_SOURCE_URL.test(content)) findings.hygieneContent.push({ file: rel, reason: 'private source repository URL' });
+    for (const revision of PRIVATE_REVISIONS) {
+      if (content.includes(revision)) findings.hygieneContent.push({ file: rel, reason: 'private source revision' });
+    }
+    if (MACHINE_PATH.test(content)) findings.hygieneContent.push({ file: rel, reason: 'developer-specific machine path' });
   }
 }
 

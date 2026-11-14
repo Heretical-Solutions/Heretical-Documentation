@@ -64,8 +64,8 @@ MANIFEST="eng/sources.manifest.json"
 # whitespace (the workspace path "Heretical Development" does). Both Doxygen passes
 # therefore run in a unique, space-free sandbox that mirrors the repository's relative
 # layout and is removed after the build. PORTAL_BUILD_TMPDIR selects a whitespace-free
-# parent directory; the default parent is /tmp/kilo.
-BUILD_TMP_ROOT="${PORTAL_BUILD_TMPDIR:-/tmp/kilo}"
+# parent directory; the default is a product-owned path under TMPDIR or /tmp.
+BUILD_TMP_ROOT="${PORTAL_BUILD_TMPDIR:-${TMPDIR:-/tmp}/heretical-documentation}"
 
 sha256_of() {
   sha256sum "$1" | cut -d' ' -f1

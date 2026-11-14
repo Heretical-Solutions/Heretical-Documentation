@@ -129,6 +129,15 @@ function rewriteOne(rawInner, ctx, rewrites) {
       newTarget = path.posix.relative(path.posix.dirname(ctx.intermRel), interm) + frag;
       reason = 'in-set';
     } else {
+      if (ctx.publicSource === false) {
+        // The public portal must not advertise a private repository or turn an
+        // unmapped path into a guessed source URL. In-set links were already
+        // preserved. Link to the local availability note for everything else.
+        newTarget = path.posix.relative(path.posix.dirname(ctx.intermRel), 'source-availability.md') + frag;
+        reason = 'private-source';
+        rewrites.push({ file: ctx.intermRel, from: rawInner, to: newTarget, reason });
+        return rest ? `${newTarget} ${rest}` : newTarget;
+      }
       const mount = ctx.mounts.find(
         (m) => rootRel === m.sourcePath || rootRel.startsWith(m.sourcePath + '/'),
       );
@@ -252,14 +261,17 @@ function buildProvenance(manifest, restore, coverageEntries, rewriteStats, porta
   lines.push('| Source | Name | Ref | Mode | Commit used | Documents |');
   lines.push('|---|---|---|---|---|---|');
   for (const s of restore.sources) {
+    const sourceDefinition = manifest.sources.find((item) => item.id === s.id);
+    const isPrivate = sourceDefinition && sourceDefinition.public === false;
     const count = coverageEntries.filter((c) => c.sourceId === s.id).length;
-    lines.push(`| \`${s.id}\` | ${s.name} | \`${s.ref}\` | ${s.mode} | \`${s.actualCommit}\` | ${count} |`);
+    lines.push(`| \`${s.id}\` | ${s.name} | \`${s.ref}\` | ${s.mode} | ${isPrivate ? 'private revision withheld' : `\`${s.actualCommit}\``} | ${count} |`);
   }
   lines.push('');
   lines.push('## Coverage');
   lines.push('');
   lines.push(`- Published source documents: **${coverageEntries.filter((c) => c.kind === 'source').length}**`);
-  lines.push(`- Portal-owned pages: landing index and this provenance page`);
+  lines.push(`- Portal-owned pages: landing index, source availability and this provenance page`);
+  lines.push(`- Private-source revisions are withheld from public provenance. Exact private inputs remain in internal build/compatibility records.`);
   lines.push(`- Link rewrites applied in intermediates: **${rewriteStats.total}** (${rewriteStats.inSet} in-set preserved, ${rewriteStats.outOfSet} out-of-set, ${rewriteStats.crossRepo} cross-repo, ${rewriteStats.unresolved} unresolved)`);
   lines.push('');
   lines.push('The explicit coverage mapping is tracked in `eng/sources.manifest.json`. No document is published unless it is listed there; arbitrary repository files are never crawled.');
@@ -329,7 +341,31 @@ function main() {
       }
       const absDest = path.join(ASSEMBLED, intermRel);
       fs.mkdirSync(path.dirname(absDest), { recursive: true });
-      fs.copyFileSync(absSrc, absDest);
+      if (src.public === false) {
+        // Private source stays exact in restore/compatibility records. Public
+        // output redacts private revisions, private source links and known
+        // developer checkout paths in the ignored intermediate only.
+        let publicText = fs.readFileSync(absSrc, 'utf8');
+        for (const other of restore.sources.filter((s) => s.id === src.id)) {
+          publicText = publicText.split(other.actualCommit).join('[private source revision withheld]');
+        }
+        publicText = publicText.split(src.commit).join('[private source revision withheld]');
+        publicText = publicText.replace(/https?:\/\/github\.com\/Heretical-Solutions\/Heretical-Development[^\s)\]>"]*/g, '[private source link withheld]');
+        publicText = publicText.replace(/(?:\/SSD1\/|\/home\/[A-Za-z0-9._-]+\/|\/Users\/[A-Za-z0-9._-]+\/|\/tmp\/kilo(?:\/|\b)|[A-Za-z]:\\Users\\)[^\s)`"']*/g, '[machine-local path]');
+        fs.writeFileSync(absDest, publicText);
+      } else {
+        fs.copyFileSync(absSrc, absDest);
+      }
+      if (src.public !== false) {
+        // Older pinned public documentation may mention a previous tool-specific
+        // cache default. Public output must not depend on a developer checkout.
+        const publicText = fs.readFileSync(absDest, 'utf8')
+          .replace(/\$\{BLOG_TMPDIR:-\/tmp\/kilo\}/g, '${BLOG_TMPDIR:-${TMPDIR:-/tmp}/heretical-blog}')
+          .replace(/\/SSD1\/Ruby gems/g, '/path with spaces/gems')
+          .replace(/\/tmp\/kilo\//g, '${TMPDIR:-/tmp}/heretical-blog/')
+          .replace(/\/tmp\/kilo(?=[\s)`"'])/g, '${TMPDIR:-/tmp}/heretical-blog');
+        fs.writeFileSync(absDest, publicText);
+      }
       publishedIndex.set(`${src.id}:${posixNormalize(entry.src)}`, intermRel);
       intermediateSet.add(intermRel);
       coverageEntries.push({
@@ -337,12 +373,17 @@ function main() {
         sourceId: src.id,
         src: entry.src,
         intermediatePath: intermRel,
-        canonicalUrl: `${src.web}/blob/${canonicalRefsById.get(src.id)}/${entry.src}`,
+        canonicalUrl: src.public === false ? null : `${src.web}/blob/${canonicalRefsById.get(src.id)}/${entry.src}`,
       });
     }
   }
 
   // Portal landing page.
+  const availability = `# Source Availability\n\nSome aggregated source documents originate from a private workspace repository.\nPublic portal pages preserve their reviewed content and internal navigation, but\ndo not link to private repository paths or expose private source revisions.\n\nExact private source inputs remain in the internal build and compatibility\nrecords. Public upstream sources retain their normal source provenance.\n\n`;
+  fs.writeFileSync(path.join(ASSEMBLED, 'source-availability.md'), availability);
+  intermediateSet.add('source-availability.md');
+  coverageEntries.push({ kind: 'portal', sourceId: 'portal', src: 'source-availability.md', intermediatePath: 'source-availability.md' });
+
   const landingSrc = path.join(CONTENT_DIR, 'index.md');
   if (!fs.existsSync(landingSrc)) fail('content/index.md is missing');
   fs.copyFileSync(landingSrc, path.join(ASSEMBLED, 'index.md'));
@@ -370,6 +411,7 @@ function main() {
       intermRel: entry.intermediatePath,
       web: srcDef.web,
       canonicalRef: canonicalRefsById.get(entry.sourceId),
+      publicSource: srcDef.public !== false,
       publishedIndex,
       intermediateSet,
       mounts,
@@ -385,7 +427,7 @@ function main() {
   }
 
   // Rewrite links in portal pages (intermediate coordinates).
-  for (const rel of ['index.md', 'provenance.md']) {
+  for (const rel of ['index.md', 'provenance.md', 'source-availability.md']) {
     const abs = path.join(ASSEMBLED, rel);
     const md = fs.readFileSync(abs, 'utf8');
     const ctx = { kind: 'portal', relCoords: rel, intermRel: rel, publishedIndex, intermediateSet, mounts, byId, canonicalRefsById };

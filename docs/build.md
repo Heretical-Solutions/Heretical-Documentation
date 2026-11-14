@@ -94,6 +94,13 @@ The deployable payload is `artifacts/site`:
   exception are copied into `/licenses/` or the payload root so notices travel with the
   static site. The build-only Doxygen GPL text stays in the repository `licenses/` only.
 
+A source manifest entry declares `public: true` or `public: false`. Public sources retain
+canonical source links/revisions. Private sources keep exact clone URLs/SHAs only in the
+restore manifest and internal records; generated HTML and public provenance omit private
+repository links/revisions and route out-of-set links to `source-availability.md`.
+Developer-specific absolute paths are rejected from generated public output. These are
+presentation/disclosure transforms, not changes to canonical source or licensing attribution.
+
 Generated output stays entirely under ignored `artifacts/`. Nothing machine-specific is
 written into tracked configuration: the tracked `Doxyfile` and `doxygen/*.cfg` use stable
 paths relative to the repository root.
@@ -150,7 +157,7 @@ Eight steps, all of which must pass:
 The workspace path contains spaces (`Heretical Development`). Node/npm handle the spaced
 repository path, but Doxygen 1.18.0 mis-resolves some relative Markdown links when its
 working path contains whitespace. Both Doxygen passes therefore run in a unique space-free
-sandbox under `PORTAL_BUILD_TMPDIR` (default `/tmp/kilo`). The sandbox mirrors the repository's
+sandbox under `PORTAL_BUILD_TMPDIR` (default `${TMPDIR:-/tmp}/heretical-documentation`). The sandbox mirrors the repository's
 relative layout, is removed when the build exits, and copies its results back into ignored
 `artifacts/`. Failure diagnostics are copied to `artifacts/main.stdout.log` or
 `artifacts/fixture.stdout.log` before cleanup. No restored tool or generated payload is left

@@ -63,7 +63,7 @@ The workspace path contains spaces (`Heretical Development`). Doxygen 1.18 mis-r
 relative Markdown links when its working path contains whitespace: the same intermediate
 tree that builds with zero warnings from a space-free path produced four
 "unable to resolve reference" warnings from the spaced path. Both Doxygen passes therefore
-run in a unique space-free sandbox (created under `/tmp/kilo`, or the whitespace-free
+run in a unique space-free sandbox (created under `${TMPDIR:-/tmp}/heretical-documentation`, or the whitespace-free
 `PORTAL_BUILD_TMPDIR` parent) that mirrors the repository's relative layout and is removed
 when the build exits; results are copied back into ignored `artifacts/`. This is the same
 class of fix the blog applies to its Bundler gem path. Unlike the blog, Node/npm and the
