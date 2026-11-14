@@ -342,14 +342,20 @@ function main() {
       const absDest = path.join(ASSEMBLED, intermRel);
       fs.mkdirSync(path.dirname(absDest), { recursive: true });
       if (src.public === false) {
+        const privateRevisionPattern = /\b[0-9a-f]{40}\b/g;
+        const privateRevisions = new Set([src.commit, ...restore.sources.filter((s) => s.id === src.id).map((s) => s.actualCommit)]);
+        // Compatibility records may cite earlier private source-lock revisions
+        // that are not this build's input. Collect those exact internal SHAs for
+        // redaction without hiding public upstream/deployment provenance.
+        const compatibilityText = fs.readFileSync(absSrc, 'utf8');
+        for (const match of compatibilityText.matchAll(privateRevisionPattern)) privateRevisions.add(match[0]);
         // Private source stays exact in restore/compatibility records. Public
         // output redacts private revisions, private source links and known
         // developer checkout paths in the ignored intermediate only.
         let publicText = fs.readFileSync(absSrc, 'utf8');
-        for (const other of restore.sources.filter((s) => s.id === src.id)) {
-          publicText = publicText.split(other.actualCommit).join('[private source revision withheld]');
+        for (const revision of privateRevisions) {
+          publicText = publicText.split(revision).join('[private source revision withheld]');
         }
-        publicText = publicText.split(src.commit).join('[private source revision withheld]');
         publicText = publicText.replace(/https?:\/\/github\.com\/Heretical-Solutions\/Heretical-Development[^\s)\]>"]*/g, '[private source link withheld]');
         publicText = publicText.replace(/(?:\/SSD1\/|\/home\/[A-Za-z0-9._-]+\/|\/Users\/[A-Za-z0-9._-]+\/|\/tmp\/kilo(?:\/|\b)|[A-Za-z]:\\Users\\)[^\s)`"']*/g, '[machine-local path]');
         fs.writeFileSync(absDest, publicText);
