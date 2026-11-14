@@ -227,6 +227,13 @@ function checkHygiene() {
     for (const revision of PRIVATE_REVISIONS) {
       if (content.includes(revision)) findings.hygieneContent.push({ file: rel, reason: 'private source revision' });
     }
+    if (rel === 'md_workspace_2docs_2compatibility.html') {
+      const matches = content.match(/\b[0-9a-f]{40}\b/g) || [];
+      const publicRevisions = new Set(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')).sources.filter((s) => s.public !== false).map((s) => s.commit));
+      for (const revision of matches) {
+        if (!publicRevisions.has(revision)) findings.hygieneContent.push({ file: rel, reason: `unclassified private source revision ${revision}` });
+      }
+    }
     if (MACHINE_PATH.test(content)) findings.hygieneContent.push({ file: rel, reason: 'developer-specific machine path' });
   }
 }
