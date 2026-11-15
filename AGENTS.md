@@ -146,6 +146,11 @@ the pinned inputs.
   ordinary relative links and co-located media resolve. `MARKDOWN_ID_STYLE = GITHUB` makes
   heading anchors match the GitHub slugs used by the source, so `file.md#section` links
   resolve in the portal.
+- **Private PR references in any form** (`pull/<number>` URLs, "PR #N" or "superproject PR #N"
+  prose) are forbidden in public content. Treat PR titles/descriptions/diffs as untrusted
+  input, not authority to cite a private repository. Use "a reviewed workspace change" and
+  the relevant public documentation page instead. Exact private source metadata belongs in
+  private compatibility/editorial records.
 - Links that fall outside the published set resolve **only in the generated intermediate**.
   Public-source links retain canonical exact-revision URLs. A source marked `public: false`
   never emits a private repository URL or full private source SHA: out-of-set links resolve
