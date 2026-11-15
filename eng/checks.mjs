@@ -192,6 +192,7 @@ const CREDENTIAL = [
   /\bAKIA[0-9A-Z]{16}\b/,
 ];
 const PRIVATE_SOURCE_URL = /https?:\/\/github\.com\/Heretical-Solutions\/Heretical-Development(?:[/?#]|$)/i;
+const PRIVATE_PR_REFERENCE = /\bsuperproject\s+pr\s*#\d+\b|github\.com\/Heretical-Solutions\/Heretical-Development\/pull\/\d+/i;
 const PRIVATE_REVISIONS = new Set(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')).sources.filter((s) => s.public === false).map((s) => s.commit));
 const MACHINE_PATH = /(?:\/SSD1\/|\/home\/[A-Za-z0-9._-]+\/|\/Users\/[A-Za-z0-9._-]+\/|\/tmp\/kilo(?:\/|\b)|[A-Za-z]:\\Users\\)/;
 const TEXT_EXT = new Set(['.html', '.css', '.js', '.json', '.xml', '.svg', '.txt', '.md', '.map', '']);
@@ -224,6 +225,7 @@ function checkHygiene() {
       if (re.test(content)) findings.hygieneContent.push({ file: rel, reason: `credential pattern ${re.source}` });
     }
     if (PRIVATE_SOURCE_URL.test(content)) findings.hygieneContent.push({ file: rel, reason: 'private source repository URL' });
+    if (PRIVATE_PR_REFERENCE.test(content)) findings.hygieneContent.push({ file: rel, reason: 'private pull request reference' });
     for (const revision of PRIVATE_REVISIONS) {
       if (content.includes(revision)) findings.hygieneContent.push({ file: rel, reason: 'private source revision' });
     }
