@@ -1,0 +1,35 @@
+# Documentation portal — source-independent structural validation (Woodpecker CI).
+#
+# Runs eng/check-structure.sh only. It validates portal.yml, eng/sources.manifest.json,
+# link syntax, theme pinning, and manifest/portal agreement. It needs NO private-source
+# credential and NO network, so it is safe for every branch push to master and for all
+# pull requests, including untrusted forks and Dependabot PRs. It is a structural gate,
+# not a claimed documentation build: full validation (restore + build + link/provenance
+# checks) is a separate, token-gated workflow.
+#
+# The step image is the digest-pinned official Node 20.18.0 (bookworm) image, which
+# provides bash, git, coreutils, and the node runtime that eng/lib/common.sh uses to
+# parse the manifest. No Docker socket is exposed to the step.
+#
+# Triggering: manual/cron only, matching the initial local-only policy (GitHub
+# webhooks are disabled after activation, so push and pull-request events do not reach
+# Woodpecker yet). Because this check is source-independent and needs no credential,
+# it is the workflow that MAY later be extended to push and pull_request (including
+# untrusted forks and Dependabot) once the operator enables webhooks — that extension
+# is a separate, reviewed decision and is not claimed here.
+
+labels:
+  platform: linux/amd64
+  backend: docker
+  zone: checks
+
+when:
+  - event: [cron, manual]
+    branch: master
+
+steps:
+  structural:
+    name: check-structure
+    image: node:20.18.0-bookworm@sha256:a7a3b7ec6de4b11bb2d673b31de9d28c6da09c557ee65453672c8e4f754c23fc
+    commands:
+      - bash eng/check-structure.sh

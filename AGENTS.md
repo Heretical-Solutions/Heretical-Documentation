@@ -13,10 +13,10 @@ weaken workspace history-separation, dependency, provenance, or licensing rules.
 | Product type | Website (documentation portal) |
 | Maintainers | Heretical Solutions |
 | Build mode | Standalone — builds from its own canonical clone using pinned inputs |
-| Primary outputs | Prebuilt static Doxygen site deployed by GitHub Actions Pages artifact |
+| Primary outputs | Prebuilt static Doxygen site; validated on Woodpecker, published through a manual-only GitHub Actions Pages adapter |
 | Source branch | `master` |
 | Published URL | `https://heretical-solutions.github.io/Heretical-Documentation/` |
-| Release ownership | This repository, through its own reviewed GitHub Actions workflow |
+| Release ownership | This repository: ongoing validation on Woodpecker (`.woodpecker/structural.yaml`, token-gated `.woodpecker/full-validation.yaml`); publication through a manual-only GitHub Actions Pages adapter under the protected `github-pages` environment (ADR-0001) |
 
 Purpose: aggregate maintained workspace and product documentation into one browsable,
 searchable portal with stable URLs, a consistent look, and cross-product navigation, while
@@ -29,8 +29,10 @@ This repository owns:
 - Doxygen configuration (`Doxyfile`, `Doxyfile.fixture`, `doxygen/`) and the non-published
   C# extraction fixture (`tests/fixture/`).
 - The exact source manifest and coverage mapping (`eng/sources.manifest.json`).
-- The authoritative commands (`eng/`), GitHub Actions Pages workflow, and this product's
-  documentation, licensing, and notices.
+- The authoritative commands (`eng/`), the Woodpecker validation workflows
+  (`.woodpecker/structural.yaml` and token-gated `.woodpecker/full-validation.yaml`), the
+  manual-only GitHub Actions Pages publication adapter, and this product's documentation,
+  licensing, and notices.
 
 It does not own canonical product documentation, source code, APIs, releases, changelogs,
 ADRs, planning cards, the blog's editorial content, GitHub Pages settings beyond its own
@@ -56,7 +58,9 @@ documentation/
 ├── tests/fixture/           # Non-published C# extraction fixture source
 ├── package.json / package-lock.json   # Pinned theme (exact git commit)
 ├── README.md  LICENSE  THIRD_PARTY_NOTICES.md  AGENTS.md
-├── .github/workflows/pages.yml
+├── .woodpecker/structural.yaml        # Source-independent validation (no credential/network)
+├── .woodpecker/full-validation.yaml   # Restore+build+checks, master manual/cron, token-gated
+├── .github/workflows/pages.yml        # Manual-only Pages publication adapter (ADR-0001)
 └── artifacts/               # Restored tools/sources, intermediates, site; ignored
 ```
 
@@ -171,17 +175,27 @@ the pinned inputs.
 
 ## 7. Deployment rules
 
-- Publication is GitHub Actions + Pages **artifact** deployment to GitHub project Pages at
+- Ongoing validation runs on **Woodpecker**: `.woodpecker/structural.yaml` runs
+  `eng/check-structure.sh` (source-independent, no credential/network), and
+  `.woodpecker/full-validation.yaml` runs `eng/restore.sh` + `eng/validate.sh` on `master`
+  by manual/cron only, with the private-source read-only credential supplied as the
+  `WORKSPACE_READ_TOKEN` Woodpecker secret. Publication is a **manual-only** GitHub Actions
+  Pages **artifact** deployment (the ADR-0001 exception, because Pages requires the GitHub
+  Pages API the local-only server cannot use) to
   `https://heretical-solutions.github.io/Heretical-Documentation/`. There is no
   `gh-pages` branch, no Jekyll-on-GitHub build, no CNAME, custom domain, DNS, or external
   certificate.
-- The workflow (`.github/workflows/pages.yml`) validates same-repository pull requests
-  without publishing. Fork and Dependabot PRs run only `eng/check-structure.sh` without the
-  private-source token; this is not a full build. Only a push to `master`, or a manual
-  `workflow_dispatch` of the `master` workflow carrying exact source SHAs, may deploy.
+- The Actions workflow (`.github/workflows/pages.yml`) triggers on `workflow_dispatch`
+  only; it no longer builds on push or pull request. Fork and Dependabot PRs receive no
+  private-source token and, when corresponding PR filters are approved later, may run
+  only the source-independent structural check in Woodpecker; this is not a full build. Only a manual `workflow_dispatch`
+  of the `master` workflow may deploy, using its exact superproject/blog SHA inputs or
+  manifest pins, and only into the protected `github-pages` environment after explicit
+  disclosure-review confirmation.
 - Default `contents: read`; `pages: write` and `id-token: write` only for the deploy job;
   deployment targets the protected `github-pages` environment; actions are pinned to
-  reviewed immutable commits; Pages concurrency is non-cancelling.
+  reviewed immutable commits; Pages concurrency is non-cancelling. Historical Actions runs
+  remain historical publication evidence, not Woodpecker results.
 - The payload is `artifacts/site` only: generated HTML, theme CSS/JS, portal branding,
   `.nojekyll`, the license texts, notices, and the provenance page. No tools, sources,
   `node_modules`, caches, logs, fixture output, credentials, or machine paths.

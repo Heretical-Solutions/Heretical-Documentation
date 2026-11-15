@@ -15,7 +15,7 @@ tested rather than what is theoretically supported.
 | Git | 2.43.0 | Tested, including exact-SHA shallow fetch |
 | `curl` / `tar` / `sha256sum` | current | Tested (Doxygen download and verification) |
 | Graphviz `dot` | not required | `HAVE_DOT = NO`; no graph dependency |
-| Container runtime | Docker present but not used | Not required |
+| Container runtime | Docker 29.1.3 with pinned `node:20.18.0-bookworm` image `sha256:a7a3b7ec…4c23fc` | Structural checks, clean local-source restore, and full validation tested |
 
 Validated with this combination, from a wiped `artifacts/` and `node_modules/`:
 
@@ -51,6 +51,10 @@ Validated with this combination, from a wiped `artifacts/` and `node_modules/`:
   credential, uploaded `artifacts/site`, and deployed the initial site. The published
   provenance records superproject `ba131fe6838cba3411b0f709be5aaa754929b27f` and blog
   `1c505359e5b4afb9323906b4b4589b00e676f57f`.
+- The pinned `node:20.18.0-bookworm` workflow image also passed structural checks, clean
+  restore with explicitly marked local non-production source overrides, and the complete
+  validation suite with **0 issues** on 2026-11-15. This tests the CI runtime without a
+  private-source token; it is not live Woodpecker scheduling evidence.
 - Firefox desktop and mobile screenshots were inspected locally; interactive search,
   light/dark behavior, and browser-console acceptance remain manual checks.
 - Registered-workspace local preview passes: 30 documents, 1306 internal references,
@@ -102,7 +106,7 @@ relocated.
 | Graphviz class/collaboration diagrams | Disabled (`HAVE_DOT = NO`) |
 | CDN / web fonts / third-party runtime scripts | None; theme CSS/JS is self-hosted from the pinned commit |
 | C# API reference | Non-published fixture only; no product publishes a library API yet |
-| CI/CD | GitHub Actions build/validate on PR; Actions Pages artifact deploy on `master`/dispatch |
+| CI/CD | Woodpecker structural and full-validation workflows implemented; live scheduling pending. GitHub Actions reduced to a manually dispatched Pages publication adapter on `master` with disclosure confirmation |
 
 ## Browser expectations
 
@@ -116,13 +120,13 @@ manual verification, not as successes.
 
 | Item | Status |
 |---|---|
-| Live Pages URL, asset loading, console errors | Pending: requires the Actions deploy and Pages settings |
+| Live Pages URL, asset loading, console errors | Historical initial deployment verified; the revised manual adapter requires a new reviewed dispatch before current-revision claims |
 | External link liveness (128 references) | Not checked; validation contacts no external network |
 | Browser rendering / search interaction | Pending manual; not automated |
 | macOS / Windows builds | Untested; the pinned Doxygen release is Linux x86_64 |
 | Other Doxygen or theme versions | Untested; the pins are the verified combination |
-| GitHub Actions execution | Not run from this environment; the workflow is linted structurally only |
-| Clean recursive-checkout integration | Deferred until the superproject records the portal gitlink (no canonical source commit exists yet) |
+| Woodpecker live execution and revised Actions adapter | Pending operator acceptance; workflows are linted locally, while authoritative portal commands passed locally. Historical Actions run `43540473334` does not validate the revised adapter |
+| Clean recursive-checkout integration for the revised workflow | Pending until the revised portal/superproject revisions are committed and integrated; existing registered source pins are recorded above |
 
 ## Release and versioning
 

@@ -116,6 +116,15 @@ eng/serve.sh --host 127.0.0.1 --port 4001
 exact project Pages base path, so relative URLs behave as they will in production. It binds
 loopback only and contacts no external network.
 
+## Woodpecker workflows
+
+`.woodpecker/structural.yaml` runs the source-independent structural command without a
+private-source credential. `.woodpecker/full-validation.yaml` restores the pinned inputs and
+runs full validation on trusted `master` manual/cron triggers; only its restore step receives
+the read-only `WORKSPACE_READ_TOKEN`. Neither workflow publishes. The manual GitHub Actions
+Pages adapter revalidates before publication. Live Woodpecker scheduling remains an operator
+acceptance gate and is not inferred from local command results.
+
 ## Validation
 
 ```sh

@@ -66,4 +66,4 @@ generated provenance page. It is for review only and must never be used to publi
 
 There is no package command, no unit-test suite, and no cross-product integration target.
 The C# fixture runs during `eng/build.sh` and stays unpublished under `artifacts/fixture`.
-Publication is a GitHub Actions Pages deployment, described in `docs/deployment.md`.
+Ongoing validation runs on Woodpecker. Publication is a manually dispatched GitHub Actions Pages adapter, described in `docs/deployment.md`.
