@@ -23,8 +23,18 @@ a default flat page list is not accepted. This is not a publication claim; the
 reviewed portal and integrated superproject revisions still need their normal
 commit/push and separate publication decisions.
 
-## Tested combination
+## Blog source-pin update — 2026-11-16
 
+The companion source manifest advances the private workspace input to
+`e754b060d5a07318de6ce0b6678dab955422704e` and the public blog input to
+`aaceead27f4e5509c7d8308909ed156f1df38536`, containing the approved Woodpecker
+desktop CI progress post and Kan lead image. This is an exact-source documentation
+input change, not a site publication. The blog's clean production build and
+70-file deployment dry run passed; the portal's exact-pin restore/build/validation
+must pass before integration. Historical default pins and dispatch overrides are
+publication evidence, not silently rewritten defaults.
+
+## Tested combination
 | Input | Version | Status |
 |---|---|---|
 | Operating system | Linux Mint 22.2 (Ubuntu 24.04 base), Linux `x86_64` | Tested |

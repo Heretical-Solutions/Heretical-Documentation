@@ -13,7 +13,7 @@
       "repository": "https://github.com/Heretical-Solutions/Heretical-Development.git",
       "web": "https://github.com/Heretical-Solutions/Heretical-Development",
       "public": false,
-      "commit": "ba131fe6838cba3411b0f709be5aaa754929b27f",
+      "commit": "e754b060d5a07318de6ce0b6678dab955422704e",
       "ref": "develop",
       "destPrefix": "workspace",
       "files": [
@@ -74,7 +74,7 @@
       "repository": "https://github.com/Heretical-Solutions/Heretical-Blog.git",
       "web": "https://github.com/Heretical-Solutions/Heretical-Blog",
       "public": true,
-      "commit": "1c505359e5b4afb9323906b4b4589b00e676f57f",
+      "commit": "aaceead27f4e5509c7d8308909ed156f1df38536",
       "ref": "master",
       "destPrefix": "products/blog",
       "files": [
