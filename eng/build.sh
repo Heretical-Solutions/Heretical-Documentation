@@ -64,6 +64,9 @@ log "staged $(ls "$THEME_STAGE_DIR" | wc -l) theme files into $THEME_STAGE_DIR"
 log "assembling intermediates"
 node eng/assemble.mjs
 
+# Never let a previous run's coverage map conceal a missing first-pass XML input.
+rm -f "$ARTIFACTS_DIR/coverage.json"
+
 # ---------------------------------------------------------------------------
 # 3. Run both Doxygen passes in a space-free sandbox that mirrors this
 #    repository's relative layout, then copy the results back into artifacts.
@@ -94,6 +97,17 @@ if ! ( cd "$BUILD_SANDBOX" && "$DX_ABS" Doxyfile >main.stdout.log 2>&1 ); then
   cp "$BUILD_SANDBOX/main.stdout.log" "$ARTIFACTS_DIR/main.stdout.log"
   die "Doxygen portal pass failed; see $ARTIFACTS_DIR/main.stdout.log"
 fi
+# The coverage generator consumes artifacts from the repository, not the
+# sandbox. Copy the first-pass XML back before deriving navigation from it.
+# Otherwise a clean CI checkout has no artifacts/coverage.json yet and the
+# navigation generator fails before the Pages adapter can validate the payload.
+log "copying first-pass Doxygen XML back into artifacts"
+rm -rf "$MAIN_OUTPUT"
+mkdir -p "$DOXYGEN_WORK"
+cp -R "$BUILD_SANDBOX/artifacts/doxygen/main" "$MAIN_OUTPUT"
+log "building first-pass coverage map for navigation"
+node eng/coverage.mjs
+
 # Doxygen's related-page IDs are authoritative; build the hierarchy from them
 # before the final published navigation pass. A flat list is deliberately not
 # retained in the sidebar.

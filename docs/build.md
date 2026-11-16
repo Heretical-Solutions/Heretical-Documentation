@@ -75,8 +75,11 @@ an effective `Doxyfile` under `artifacts/doxygen`, and runs the pinned Doxygen t
 - **Published pass** (`Doxyfile`): input `artifacts/intermediates`, output
   `artifacts/doxygen/main/html`, XML to `artifacts/doxygen/main/xml`, warnings to
   `artifacts/doxygen/main/warn.log`. `USE_MDFILE_AS_MAINPAGE` makes the landing page
-  `index.html`. `eng/navigation.mjs` then reads those XML page IDs and turns
-  `eng/navigation.json` into an explicit nested `DoxyLayout`. A second published
+  `index.html`.   `eng/navigation.mjs` then reads those XML page IDs and turns
+  `eng/navigation.json` into an explicit nested `DoxyLayout`. Before that step the
+  build copies the first-pass XML back to `artifacts` and removes any previous
+  `coverage.json` at startup, so clean CI cannot use a stale coverage map or fail
+  merely because this file has not yet been copied. A second published
   navigation pass uses the complete pinned `doxygen/DoxyLayout.default.xml` with only
   `navindex` replaced, so class/file layouts are unchanged and the sidebar is no
   longer a flat list of every document. Every navigation source must have one parent
