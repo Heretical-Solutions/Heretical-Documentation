@@ -21,7 +21,7 @@
 labels:
   platform: linux/amd64
   backend: docker
-  zone: checks
+  zone: local-checks
 
 when:
   - event: [cron, manual]
