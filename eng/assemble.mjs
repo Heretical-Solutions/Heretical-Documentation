@@ -323,6 +323,8 @@ function main() {
   fs.rmSync(ASSEMBLED, { recursive: true, force: true });
   fs.mkdirSync(ASSEMBLED, { recursive: true });
 
+  fs.mkdirSync(ASSEMBLED, { recursive: true });
+
   const publishedIndex = new Map(); // "sourceId:srcRel" -> intermediateRel
   const intermediateSet = new Set();
   const coverageEntries = [];

@@ -54,6 +54,8 @@ documentation/
 │   ├── restore.sh  build.sh  serve.sh  serve.mjs  validate.sh
 │   ├── check-structure.sh  source-askpass.sh
 │   ├── assemble.mjs  coverage.mjs  checks.mjs  warn-gate.mjs  verify-pins.mjs
+│   ├── navigation.mjs / navigation.json # Explicit nested Doxygen topic layout
+│   ├── doxygen/DoxyLayout.default.xml   # Complete default layout; only navindex changes
 │   ├── sources.manifest.json  warning-allowlist.txt
 ├── licenses/                # Upstream license texts retained for the record
 ├── tests/fixture/           # Non-published C# extraction fixture source
@@ -167,6 +169,15 @@ the pinned inputs.
 - Every intended input must produce an output. `eng/checks.mjs` fails on any published
   document that Doxygen silently dropped (for example, a `README.md`/`index.md` basename,
   which Doxygen special-cases; the assembler renames such basenames and fixes links).
+- The sidebar hierarchy is explicit in `eng/navigation.json`. Each page reference
+  has one parent and must resolve through `artifacts/coverage-input.json` and
+  Doxygen XML to a generated related-page ID. Use source-qualified
+  `workspace:`, `blog:`, and `portal:` references, not guessed HTML filenames.
+  `eng/navigation.mjs` merges only `navindex` into the complete pinned
+  `doxygen/DoxyLayout.default.xml`; never suppress missing-layout warnings or
+  replace other layout sections. `eng/checks.mjs` must continue asserting nested
+  handbook/tool topics in `navtreedata.js`. Ordinary Markdown links alone do not
+  create this hierarchy.
 - Products that publish no library API (for example, the blog) get overview and guides only,
   never a fabricated API section, product page, namespace index, or member list.
 - The generated provenance page records public component revisions, toolchain, coverage and link

@@ -15,7 +15,11 @@ as tracked content.
 
 Local-source validation passed with **56 declared source documents**, **81 HTML
 files**, zero Doxygen warnings, and zero validation issues. Coverage includes the
-new handbook and tool overview mappings. This is not a publication claim; the
+new handbook and tool overview mappings. The sidebar now uses an explicit nested
+`DoxyLayout` hierarchy: Infrastructure handbook → Getting started / operations /
+Tools / Scales, with Woodpecker, Kan, and ntfy subgroups. The navigation map is
+resolved from Doxygen XML page IDs and checked in the generated `navtreedata.js`;
+a default flat page list is not accepted. This is not a publication claim; the
 reviewed portal and integrated superproject revisions still need their normal
 commit/push and separate publication decisions.
 

@@ -94,6 +94,19 @@ if ! ( cd "$BUILD_SANDBOX" && "$DX_ABS" Doxyfile >main.stdout.log 2>&1 ); then
   cp "$BUILD_SANDBOX/main.stdout.log" "$ARTIFACTS_DIR/main.stdout.log"
   die "Doxygen portal pass failed; see $ARTIFACTS_DIR/main.stdout.log"
 fi
+# Doxygen's related-page IDs are authoritative; build the hierarchy from them
+# before the final published navigation pass. A flat list is deliberately not
+# retained in the sidebar.
+cp "$BUILD_SANDBOX/Doxyfile" "$BUILD_SANDBOX/Doxyfile.navigation"
+printf '\nLAYOUT_FILE = DoxyLayout.xml\n' >>"$BUILD_SANDBOX/Doxyfile.navigation"
+node eng/navigation.mjs
+cp "$ARTIFACTS_DIR/DoxyLayout.xml" "$BUILD_SANDBOX/DoxyLayout.xml"
+log "running the published portal navigation pass with explicit topic hierarchy"
+if ! ( cd "$BUILD_SANDBOX" && "$DX_ABS" Doxyfile.navigation >navigation.stdout.log 2>&1 ); then
+  cp "$BUILD_SANDBOX/navigation.stdout.log" "$ARTIFACTS_DIR/navigation.stdout.log"
+  die "Doxygen navigation pass failed; see $ARTIFACTS_DIR/navigation.stdout.log"
+fi
+
 log "running the non-published C# fixture Doxygen pass (sandbox)"
 if ! ( cd "$BUILD_SANDBOX" && "$DX_ABS" Doxyfile.fixture >fixture.stdout.log 2>&1 ); then
   cp "$BUILD_SANDBOX/fixture.stdout.log" "$ARTIFACTS_DIR/fixture.stdout.log"

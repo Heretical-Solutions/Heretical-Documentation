@@ -39,7 +39,7 @@
         { "src": "docs/infrastructure/ntfy.md" },
         { "src": "docs/infrastructure/woodpecker.md" },
         { "src": "infrastructure/README.md", "dest": "infrastructure/overview.md" },
-        { "src": "docs/guides/infrastructure/index.md" },
+        { "src": "docs/guides/infrastructure/index.md", "dest": "docs/guides/infrastructure/overview.md" },
         { "src": "docs/guides/infrastructure/scale-selection.md" },
         { "src": "docs/guides/infrastructure/desktop-quickstart.md" },
         { "src": "docs/guides/infrastructure/woodpecker-quickstart.md" },
