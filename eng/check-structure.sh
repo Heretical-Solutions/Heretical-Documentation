@@ -25,7 +25,7 @@ const locked = lock.packages?.['node_modules/@jothepro/doxygen-awesome-css'];
 if (locked?.version !== process.env.THEME_VERSION) fail('locked theme version mismatch');
 if (locked?.resolved !== dependency) fail('package and lock theme resolution differ');
 const ids = new Set();
-const destinations = new Set(['content/index.md', 'content/provenance.md']);
+const destinations = new Set(['content/index.md', 'content/provenance.md', 'content/infrastructure.md']);
 for (const source of manifest.sources || []) {
   if (!/^[a-z0-9][a-z0-9_-]*$/.test(source.id || '') || ids.has(source.id)) fail(`invalid or duplicate source id: ${source.id}`);
   ids.add(source.id);
@@ -46,7 +46,7 @@ for (const source of manifest.sources || []) {
   }
 }
 if (!ids.size) fail('source manifest is empty');
-console.log(`structure: ${ids.size} source mappings and ${destinations.size - 2} declared documents; HTTPS theme pin verified`);
+console.log(`structure: ${ids.size} source mappings and ${destinations.size - 3} declared documents; HTTPS theme pin verified`);
 NODE
 
 log "source-independent structural checks passed; full validation still requires restored sources"

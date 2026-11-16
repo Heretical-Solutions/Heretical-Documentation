@@ -122,6 +122,23 @@ function checkNav() {
   }
 }
 
+// The sidebar must retain the explicit portal-owned topic hierarchy, not the
+// default flat Related Pages list. Parse generated data, not CSS styling.
+const navigationSource = readSite('navtreedata.js');
+const navigationArray = navigationSource.match(/var NAVTREE =\s*(\[[\s\S]*?\]);/)?.[1];
+if (!navigationArray) throw new Error('generated Doxygen NAVTREE data is missing');
+const navigationTree = JSON.parse(navigationArray);
+function navigationContains(nodes, title) {
+  return nodes.some((node) => node[0] === title || navigationContains(node[2] || [], title));
+}
+for (const title of ['Infrastructure handbook', 'Getting started', 'Tools', 'Woodpecker CI', 'Scales', 'Workspace']) {
+  if (!navigationContains(navigationTree, title)) findings.navMissing.push({ file: 'navtreedata.js', reason: `missing navigation topic: ${title}` });
+}
+const handbook = navigationTree[0]?.[2]?.find((node) => node[0] === 'Infrastructure handbook');
+if (!handbook?.[2]?.some((node) => node[0] === 'Tools' && node[2]?.length)) {
+  findings.navMissing.push({ file: 'navtreedata.js', reason: 'Infrastructure handbook has no nested Tools topic' });
+}
+
 // ---- Coverage -----------------------------------------------------------------
 function checkCoverage() {
   const input = JSON.parse(fs.readFileSync(COVERAGE_INPUT, 'utf8'));

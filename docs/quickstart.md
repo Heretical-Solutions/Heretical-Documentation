@@ -44,7 +44,13 @@ document:
 3. Link to it from `content/index.md` if it should appear on the landing page.
 4. Run `eng/validate.sh`; coverage and link checks confirm it is published and reachable.
 
-Never add a document by crawling a repository: coverage is explicit by design.
+Portal-owned navigation hubs belong in `content/<topic>.md` and may link only to
+manifest-covered source pages or other tracked content pages. `content/index.md` is
+required; `provenance.md` and `source-availability.md` are generated and cannot be
+tracked navigation pages. The assembler copies each tracked Markdown navigation page
+and includes it in coverage. Canonical operator guides stay in their owning repository.
+
+Never add a source document by crawling a repository: coverage is explicit by design.
 
 ## Previewing uncommitted workspace changes
 
@@ -66,4 +72,4 @@ generated provenance page. It is for review only and must never be used to publi
 
 There is no package command, no unit-test suite, and no cross-product integration target.
 The C# fixture runs during `eng/build.sh` and stays unpublished under `artifacts/fixture`.
-Publication is a GitHub Actions Pages deployment, described in `docs/deployment.md`.
+Ongoing validation runs on Woodpecker. Publication is a manually dispatched GitHub Actions Pages adapter, described in `docs/deployment.md`.

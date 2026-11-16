@@ -1,15 +1,12 @@
 name: pages
 
-# Trusted pull requests build and validate only; fork/Dependabot PRs run the
-# source-independent structure job without the private-source token. A push to
-# master, or a manual dispatch of master's workflow carrying optional exact
-# source SHAs, may deploy. Publication is GitHub Actions + Pages artifact to
-# project Pages; there is no gh-pages branch and no Jekyll build on GitHub.
+# Woodpecker owns routine structural and full validation. This is the narrow,
+# manual-only GitHub Actions fallback for GitHub Pages artifact publication,
+# which requires GitHub's Pages/OIDC integration. It never runs on push or pull
+# request. Dispatch from master only after reviewing every explicitly mapped
+# private-source document for public disclosure.
 
 on:
-  pull_request:
-  push:
-    branches: [master]
   workflow_dispatch:
     inputs:
       superproject_sha:
@@ -20,6 +17,11 @@ on:
         description: "Exact 40-hex blog commit to aggregate (blank = manifest pin)"
         required: false
         type: string
+      disclosure_reviewed:
+        description: "I reviewed every selected private-source document for public disclosure"
+        required: true
+        default: false
+        type: boolean
 
 # Single non-cancelling group so a deployment is never interrupted mid-flight.
 concurrency:
@@ -30,35 +32,24 @@ permissions:
   contents: read
 
 jobs:
-  structure:
-    name: Source-independent structural checks
+  build:
+    name: Restore, revalidate, and package
     runs-on: ubuntu-latest
     steps:
+      - name: Confirm disclosure review
+        env:
+          DISCLOSURE_REVIEWED: ${{ inputs.disclosure_reviewed }}
+        run: |
+          if [ "$DISCLOSURE_REVIEWED" != "true" ]; then
+            echo "::error::Review every selected private-source document and set disclosure_reviewed=true before publication."
+            exit 1
+          fi
+
       - name: Check out portal
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
-      - name: Set up Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: "20.18.0"
-          cache: npm
-      - name: Check structure without source credentials
-        run: eng/check-structure.sh
-
-  build:
-    name: Restore, build, validate, package
-    needs: structure
-    # Fork and Dependabot PRs receive no private-source token. They run the
-    # structure job only; a trusted branch must complete full validation.
-    if: >-
-      github.event_name != 'pull_request' ||
-      (github.event.pull_request.head.repo.full_name == github.repository &&
-       github.actor != 'dependabot[bot]')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+          persist-credentials: false
 
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -71,21 +62,21 @@ jobs:
           PORTAL_SRC_SUPERPROJECT_SHA: ${{ inputs.superproject_sha }}
           PORTAL_SRC_BLOG_SHA: ${{ inputs.blog_sha }}
           # A fine-grained read-only token for the private superproject only.
-          # Empty for untrusted PRs; never written into a Git remote or artifact.
+          # Never written into a Git remote or artifact.
           PORTAL_SOURCE_TOKEN: ${{ secrets.WORKSPACE_READ_TOKEN }}
-        run: eng/restore.sh
+        run: eng/restore.sh --clean
 
       - name: Build and validate
         run: eng/validate.sh
 
       - name: Upload Pages artifact
-        if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: github.ref == 'refs/heads/master'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: artifacts/site
 
   deploy:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/master'
     needs: build
     runs-on: ubuntu-latest
     environment:

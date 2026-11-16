@@ -4,9 +4,11 @@ Aggregated documentation portal for the Heretical workspace, built with
 [Doxygen](https://www.doxygen.nl/) and the [Doxygen Awesome](https://github.com/jothepro/doxygen-awesome-css)
 theme, published as a prebuilt static site on GitHub project Pages.
 
-**Status:** registered as a superproject submodule; local and GitHub Actions validation pass,
-and the initial site is deployed. The superproject's exact-SHA dispatch procedure refreshes
-the aggregated workspace documentation after each registration update.
+**Status:** local validation and the historical initial Pages deployment have passed.
+Woodpecker structural and full-validation workflows are implemented; the desktop
+organization agent is healthy, but these site pipelines have not been executed live.
+GitHub Actions is now a manual-only Pages publication adapter; its revised revision
+has not been dispatched.
 
 | Field | Value |
 |---|---|
@@ -28,6 +30,11 @@ documentation of its own beyond portal navigation, branding, and configuration.
 
 ## Quick start
 
+The searchable **Infrastructure handbook** covers first-clone setup,
+desktop/homelab/distributed scales, GitHub OAuth and agent credentials, Kan,
+ntfy, backups, and troubleshooting. `content/infrastructure.md` is its navigation
+hub; canonical guides remain in the owning workspace/tool repositories.
+
 ```sh
 eng/restore.sh          # pinned Doxygen + theme (npm ci) + exact source revisions
 eng/build.sh            # aggregate, generate, and assemble artifacts/site
@@ -44,7 +51,7 @@ See [`docs/quickstart.md`](docs/quickstart.md) for the full first-run procedure.
 | [`docs/requirements.md`](docs/requirements.md) | Toolchain, inputs, and prerequisites |
 | [`docs/build.md`](docs/build.md) | Clean restore, aggregation, generation, and build mode |
 | [`docs/quickstart.md`](docs/quickstart.md) | Minimal local preview and review loop |
-| [`docs/deployment.md`](docs/deployment.md) | GitHub Actions + Pages artifact deployment |
+| [`docs/deployment.md`](docs/deployment.md) | Woodpecker validation and the manual Pages publication adapter |
 | [`docs/compatibility.md`](docs/compatibility.md) | Tested toolchain and dependency combinations |
 | [`AGENTS.md`](AGENTS.md) | Agent instructions for this repository |
 | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Dependency inventory, licenses, and conveyed notices |

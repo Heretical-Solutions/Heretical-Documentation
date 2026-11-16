@@ -54,7 +54,7 @@ literal token in shell history or documentation. The theme lockfile uses public 
    section prefix (`workspace/…`, `products/blog/…`). Basenames Doxygen special-cases
    (`README.md`, `index.md`) are renamed via the manifest `dest` field and inbound links
    fixed, so no intended input is silently dropped.
-2. Copies the portal landing page (`content/index.md`) and generates the provenance page.
+2. Copies the portal landing page and tracked topic navigation hubs under `content/`, then generates the provenance page. Each navigation page is included in coverage; generated `provenance.md` and `source-availability.md` cannot be tracked content.
 3. Rewrites links. Relative links whose targets are inside the published set are preserved
    (and resolve in Doxygen because `MARKDOWN_ID_STYLE = GITHUB` reproduces the source's
    GitHub-slug anchors). Links that fall outside the published set — excluded same-repo
@@ -75,7 +75,12 @@ an effective `Doxyfile` under `artifacts/doxygen`, and runs the pinned Doxygen t
 - **Published pass** (`Doxyfile`): input `artifacts/intermediates`, output
   `artifacts/doxygen/main/html`, XML to `artifacts/doxygen/main/xml`, warnings to
   `artifacts/doxygen/main/warn.log`. `USE_MDFILE_AS_MAINPAGE` makes the landing page
-  `index.html`.
+  `index.html`. `eng/navigation.mjs` then reads those XML page IDs and turns
+  `eng/navigation.json` into an explicit nested `DoxyLayout`. A second published
+  navigation pass uses the complete pinned `doxygen/DoxyLayout.default.xml` with only
+  `navindex` replaced, so class/file layouts are unchanged and the sidebar is no
+  longer a flat list of every document. Every navigation source must have one parent
+  and a generated page; the generated `navtreedata.js` is checked for nested topics.
 - **Fixture pass** (`Doxyfile.fixture`): input `tests/fixture`, output `artifacts/fixture`.
   Non-published; proves C# extraction from source alone with no dotnet, Unity, `.asmdef`,
   generated `.csproj`, or stubs.
@@ -115,6 +120,15 @@ eng/serve.sh --host 127.0.0.1 --port 4001
 `eng/serve.mjs` is a dependency-free static server that serves `artifacts/site` under the
 exact project Pages base path, so relative URLs behave as they will in production. It binds
 loopback only and contacts no external network.
+
+## Woodpecker workflows
+
+`.woodpecker/structural.yaml` runs the source-independent structural command without a
+private-source credential. `.woodpecker/full-validation.yaml` restores the pinned inputs and
+runs full validation on trusted `master` manual/cron triggers; only its restore step receives
+the read-only `WORKSPACE_READ_TOKEN`. Neither workflow publishes. The manual GitHub Actions
+Pages adapter revalidates before publication. Live Woodpecker scheduling remains an operator
+acceptance gate and is not inferred from local command results.
 
 ## Validation
 

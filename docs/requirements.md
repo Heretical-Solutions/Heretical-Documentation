@@ -50,8 +50,9 @@ publication.
 
 - **The pinned GitHub release asset** and the **npm git dependency** are contacted by
   `eng/restore.sh` on a cold cache.
-- **GitHub** hosts the repository, runs the Actions Pages workflow, and serves Pages.
-  Publication and Pages settings are outside the build.
+- **Woodpecker** runs structural and full-validation workflows on the isolated `ci-checks`
+  agent through manual/cron triggers. **GitHub** hosts the repository and Pages; the
+  manual-only Actions adapter is retained solely for Pages artifact publication.
 - The blog and theme are publicly readable. The canonical superproject is **private**:
   its exact source restore requires either the developer's existing Git credential helper
   or `PORTAL_SOURCE_TOKEN` containing a narrowly scoped read-only token. CI supplies that

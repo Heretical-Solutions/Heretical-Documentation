@@ -1,0 +1,123 @@
+{
+  "description": "Portal-owned Doxygen sidebar groups. Leaves use manifest source paths, never generated HTML filenames.",
+  "groups": [
+    {
+      "title": "Infrastructure handbook",
+      "source": "portal:infrastructure.md",
+      "children": [
+        {
+          "title": "Getting started",
+          "children": [
+            { "title": "Handbook overview", "source": "workspace:docs/guides/infrastructure/overview.md" },
+            { "title": "Choose a scale", "source": "workspace:docs/guides/infrastructure/scale-selection.md" },
+            { "title": "Desktop quick start", "source": "workspace:docs/guides/infrastructure/desktop-quickstart.md" },
+            { "title": "Credentials and access", "source": "workspace:docs/guides/infrastructure/credentials-and-access.md" },
+            { "title": "Troubleshooting", "source": "workspace:docs/guides/infrastructure/troubleshooting.md" }
+          ]
+        },
+        {
+          "title": "Daily operations and product builds",
+          "children": [
+            { "title": "Daily operations", "source": "workspace:docs/guides/infrastructure/daily-operations.md" },
+            { "title": "Add a product pipeline", "source": "workspace:docs/guides/infrastructure/product-pipelines.md" },
+            { "title": "Backups and recovery", "source": "workspace:docs/guides/infrastructure/backup-and-recovery.md" }
+          ]
+        },
+        {
+          "title": "Tools",
+          "children": [
+            {
+              "title": "Woodpecker CI",
+              "source": "workspace:infrastructure/woodpecker/overview.md",
+              "children": [
+                { "title": "OAuth, agents, and first build", "source": "workspace:docs/guides/infrastructure/woodpecker-quickstart.md" },
+                { "title": "Operations", "source": "workspace:infrastructure/woodpecker/docs/operations.md" },
+                { "title": "Pipeline policy", "source": "workspace:docs/infrastructure/woodpecker.md" }
+              ]
+            },
+            {
+              "title": "Kan planning",
+              "source": "workspace:infrastructure/kan/overview.md",
+              "children": [
+                { "title": "Quick start", "source": "workspace:docs/guides/infrastructure/kan-quickstart.md" },
+                { "title": "Operations", "source": "workspace:infrastructure/kan/docs/operations.md" },
+                { "title": "Board conventions", "source": "workspace:infrastructure/kan/docs/board-conventions.md" },
+                { "title": "MCP setup", "source": "workspace:infrastructure/kan/docs/mcp.md" },
+                { "title": "Planning policy", "source": "workspace:docs/infrastructure/kan.md" }
+              ]
+            },
+            {
+              "title": "ntfy notifications",
+              "source": "workspace:infrastructure/ntfy/overview.md",
+              "children": [
+                { "title": "Quick start", "source": "workspace:docs/guides/infrastructure/ntfy-quickstart.md" },
+                { "title": "Clients and identities", "source": "workspace:infrastructure/ntfy/docs/clients.md" },
+                { "title": "Operations", "source": "workspace:infrastructure/ntfy/docs/operations.md" },
+                { "title": "Notification policy", "source": "workspace:docs/infrastructure/ntfy.md" }
+              ]
+            },
+            {
+              "title": "Backups and exports",
+              "source": "workspace:infrastructure/backup/overview.md",
+              "children": []
+            }
+          ]
+        },
+        {
+          "title": "Scales",
+          "source": "workspace:infrastructure/suite/overview.md",
+          "children": [
+            { "title": "Desktop profile", "source": "workspace:infrastructure/suite/scales/desktop.md" },
+            { "title": "Homelab profile", "source": "workspace:docs/guides/infrastructure/homelab.md" },
+            { "title": "Homelab architecture", "source": "workspace:infrastructure/suite/scales/homelab.md" },
+            { "title": "Distributed profile", "source": "workspace:docs/guides/infrastructure/distributed.md" },
+            { "title": "Distributed architecture", "source": "workspace:infrastructure/suite/scales/distributed.md" }
+          ]
+        },
+        { "title": "Infrastructure reference by tool", "source": "workspace:infrastructure/overview.md" }
+      ]
+    },
+    {
+      "title": "Workspace",
+      "children": [
+        { "title": "Repository catalog", "source": "workspace:docs/repositories.md" },
+        { "title": "Contributing", "source": "workspace:CONTRIBUTING.md" },
+        {
+          "title": "Architecture",
+          "children": [
+            { "title": "Overview", "source": "workspace:docs/architecture/overview.md" },
+            { "title": "Dependency graph", "source": "workspace:docs/architecture/dependency-graph.md" }
+          ]
+        },
+        { "title": "Repository layout", "source": "workspace:docs/repository-layout.md" },
+        { "title": "Supporting products", "source": "workspace:docs/supporting-products.md" },
+        {
+          "title": "Policies",
+          "children": [
+            { "title": "Builds", "source": "workspace:docs/build.md" },
+            { "title": "Testing", "source": "workspace:docs/testing.md" },
+            { "title": "Deployment", "source": "workspace:docs/deployment.md" },
+            { "title": "Compatibility", "source": "workspace:docs/compatibility.md" },
+            { "title": "Releases", "source": "workspace:docs/releases.md" },
+            { "title": "Licensing", "source": "workspace:docs/licensing.md" },
+            { "title": "Documentation site", "source": "workspace:docs/documentation-site.md" },
+            { "title": "Development blog", "source": "workspace:docs/development-blog.md" }
+          ]
+        },
+        { "title": "Third-party notices", "source": "workspace:THIRD_PARTY_NOTICES.md" }
+      ]
+    },
+    {
+      "title": "Development blog",
+      "source": "blog:overview.md",
+      "children": [
+        { "title": "Requirements", "source": "blog:docs/requirements.md" },
+        { "title": "Build", "source": "blog:docs/build.md" },
+        { "title": "Quick start", "source": "blog:docs/quickstart.md" },
+        { "title": "Editorial workflow", "source": "blog:docs/editorial.md" },
+        { "title": "Deployment", "source": "blog:docs/deployment.md" },
+        { "title": "Compatibility", "source": "blog:docs/compatibility.md" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+# Documentation portal — full validation (restore + build + checks), Woodpecker CI.
+#
+# Runs the authoritative portal commands unchanged:
+#   eng/restore.sh   clean, deterministic restore of the pinned Doxygen/theme/sources
+#                    (clones each source at its exact commit; needs a read-only
+#                    private-source credential for the superproject)
+#   eng/validate.sh  production build plus structural, link, provenance, and
+#                    hygiene assertions
+#
+# This pipeline reads private-source documents and publishes nothing. It therefore
+# runs ONLY on manual dispatch or a scheduled cron against master, and ONLY with the
+# narrowly scoped read-only source credential. Untrusted forks and Dependabot PRs get
+# no credential here; they run only the source-independent structural workflow. The
+# token is injected only into this step through environment/from_secret. The operator
+# configures WORKSPACE_READ_TOKEN as a portal repository secret limited to manual/cron
+# events and this exact step image. restore.sh receives it as PORTAL_SOURCE_TOKEN through
+# Git's askpass, never in a URL, argument, or tracked file. It is never printed.
+#
+# The step image is the digest-pinned official Node 20.18.0 (bookworm) image, which
+# provides node, npm, git, curl, tar, and coreutils required by restore.sh/validate.sh.
+# Publication to GitHub Pages is NOT done here; it remains a separate, manual-only
+# GitHub Actions adapter (.github/workflows/pages.yml) with its own protected
+# environment and revalidation. No Docker socket is exposed to the step.
+
+labels:
+  platform: linux/amd64
+  backend: docker
+  zone: local-checks
+
+when:
+  - event: [cron, manual]
+    branch: master
+
+steps:
+  full-validation:
+    name: restore-and-validate
+    image: node:20.18.0-bookworm@sha256:a7a3b7ec6de4b11bb2d673b31de9d28c6da09c557ee65453672c8e4f754c23fc
+    environment:
+      PORTAL_SOURCE_TOKEN:
+        from_secret: WORKSPACE_READ_TOKEN
+    commands:
+      - bash eng/restore.sh --clean
+      - bash eng/validate.sh

@@ -1,8 +1,9 @@
 # Deployment
 
-GitHub Actions + Pages **artifact** deployment to GitHub project Pages. This is the
-approved portal publication model; it differs from the blog's manual `gh-pages`
-publication. There is no `gh-pages` branch and no Jekyll build on GitHub.
+Woodpecker runs ongoing portal validation. A manual-only GitHub Actions + Pages
+**artifact** adapter performs publication to GitHub project Pages under ADR-0001; this
+differs from the blog's manual `gh-pages` publication. There is no `gh-pages` branch and
+no Jekyll build on GitHub.
 
 ## Output identity
 
@@ -23,12 +24,12 @@ renews the `github.io` certificate.
 
 `.github/workflows/pages.yml`:
 
-- **Triggers.** Every PR runs `eng/check-structure.sh` without source credentials. A
-  same-repository PR also runs the full restore/build/validation without publishing. Fork
-  and Dependabot PRs run structural checks only: they receive no private-source token and
-  cannot claim a full build. A `push` to `master` or a manual dispatch of the `master`
-  workflow may deploy; manual dispatch from another branch cannot publish.
-- **Least privilege.** Default `contents: read`. Only the restore step receives the optional
+- **Triggers.** `workflow_dispatch` only, from `master`. Routine PR/push validation belongs
+  to Woodpecker; this adapter never publishes automatically. The required
+  `disclosure_reviewed=true` input records the operator's explicit disclosure
+  acknowledgement, and the protected `github-pages` environment remains a separate
+  control-plane approval gate. Dispatch from another branch cannot upload or deploy.
+- **Least privilege.** Default `contents: read`. Only the restore step receives the
   read-only `WORKSPACE_READ_TOKEN` for the private superproject. The deploy job alone adds
   `pages: write` and `id-token: write` and targets the protected `github-pages` environment.
 - **Exact-SHA dispatch.** Optional `superproject_sha` / `blog_sha` inputs feed
@@ -55,11 +56,14 @@ renews the `github.io` certificate.
   deploy a commit that exists only locally.
 - Repository **Settings → Pages → Source → GitHub Actions**. This one-time setting is
   outside the workflow; the `github-pages` protected environment then appears automatically.
-- Repository **Settings → Secrets and variables → Actions → New repository secret**:
-  `WORKSPACE_READ_TOKEN`. Use a fine-grained read-only token restricted to
-  `Heretical-Development` with **Contents: Read**. The portal's automatic `GITHUB_TOKEN`
-  cannot read that private repository. Do not add this token to URLs, source, logs, or
-  the protected deployment environment.
+- Configure `WORKSPACE_READ_TOKEN` as a fine-grained read-only token restricted to
+  `Heretical-Development` with **Contents: Read**. Store it in the portal's Woodpecker
+  repository secrets for full validation and in Actions secrets for the publication
+  adapter. For Woodpecker, allow only `manual`/`cron` events and the exact
+  `node:20.18.0-bookworm@sha256:a7a3b7ec6de4b11bb2d673b31de9d28c6da09c557ee65453672c8e4f754c23fc`
+  image used by the restore step. The
+  portal's automatic `GITHUB_TOKEN` cannot read that private repository. Do not add this
+  token to URLs, source, logs, or the protected deployment environment.
 - **Disclosure approval:** review every manifest-selected superproject document. Its source
   repository is private, but the generated documentation will be public. Approval of the
   source commit alone is not disclosure approval for deployment.
@@ -70,23 +74,25 @@ Actions run `43540473334` validated and deployed portal source
 `bbf9c69332648bd22b0035d6b17ee9d447b93f22`, with superproject input
 `ba131fe6838cba3411b0f709be5aaa754929b27f` and blog input
 `1c505359e5b4afb9323906b4b4589b00e676f57f`. The Pages endpoint is live at the URL above.
-The workflow does not itself require a separate reviewer approval: required reviewers are
-configured in the `github-pages` environment and must be checked in the control plane when
-an explicit approval hold is required.
+This is historical publication evidence. The revised manual-only adapter and Woodpecker
+workflows have not run remotely. Required reviewers remain configured in the `github-pages`
+environment and must be checked in the control plane when an explicit approval hold is
+required; `disclosure_reviewed=true` is an additional acknowledgement, not a replacement
+for reviewing the selected content.
 
 ## Procedure
 
-1. Open a pull request. Same-repository CI runs `eng/restore.sh` and `eng/validate.sh` and
-   does **not** publish. Fork and Dependabot PRs run only `eng/check-structure.sh`, without
-   `WORKSPACE_READ_TOKEN`; full validation must be established from a trusted branch before
-   merge. Review the build and the provenance page.
-2. Merge to `master`. The `push` trigger builds, validates, uploads `artifacts/site`, and
-   deploys through the protected `github-pages` environment. Approve deployment only after
-   the private-source disclosure review.
-3. For the final registration content, run a manual `workflow_dispatch` **from `master`** with
-   `superproject_sha` set to the newly registered superproject `develop` commit so the
-   portal aggregates the revision that records the gitlink. This is the intended
-   exact-SHA override, not a moving-branch track.
+1. Run Woodpecker structural and full validation for the reviewed source. These workflows
+   never publish. Review the build, provenance page, and every selected private-source
+   document before authorizing public disclosure.
+2. Merge the reviewed portal change into `master` through the separately authorized Git
+   workflow. Woodpecker uses manual/cron triggers while GitHub webhooks are disabled.
+3. Dispatch the Actions publication adapter **from `master`** with
+   `disclosure_reviewed=true`. Supply exact `superproject_sha` and `blog_sha` inputs when
+   overriding manifest pins, including the superproject commit that records the portal
+   gitlink. Blank inputs retain the reviewed manifest revisions.
+4. Review the build and protected-environment approval, then verify the deployed URL and
+   generated provenance. Never dispatch from a moving ref or an unreviewed branch.
 
 ## Smoke tests after publication (pending manual)
 
@@ -132,7 +138,10 @@ source revision, no separate artifact store is required.
 - The private superproject requires `WORKSPACE_READ_TOKEN`, scoped to that repository with
   read-only Contents access. It is exposed only to `eng/restore.sh` and consumed through
   Git askpass. The token is not persisted in the source checkout or artifacts.
-- Fork and Dependabot PRs receive no private-source secret and run structural checks only.
+- Woodpecker structural validation receives no private-source secret. Full validation is
+  restricted to trusted `master` manual/cron events and injects the token only into its
+  restore step. If webhooks are enabled later, untrusted fork and Dependabot PRs receive
+  no token and may run structural checks only.
 - Remote URLs must stay credential-free. Never use a token-bearing remote.
 - Build validation does not constitute disclosure approval for making private documents
   public; the user must explicitly approve deployment after reviewing the selected content.
