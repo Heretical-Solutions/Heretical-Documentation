@@ -54,7 +54,7 @@ literal token in shell history or documentation. The theme lockfile uses public 
    section prefix (`workspace/…`, `products/blog/…`). Basenames Doxygen special-cases
    (`README.md`, `index.md`) are renamed via the manifest `dest` field and inbound links
    fixed, so no intended input is silently dropped.
-2. Copies the portal landing page (`content/index.md`) and generates the provenance page.
+2. Copies the portal landing page and tracked topic navigation hubs under `content/`, then generates the provenance page. Each navigation page is included in coverage; generated `provenance.md` and `source-availability.md` cannot be tracked content.
 3. Rewrites links. Relative links whose targets are inside the published set are preserved
    (and resolve in Doxygen because `MARKDOWN_ID_STYLE = GITHUB` reproduces the source's
    GitHub-slug anchors). Links that fall outside the published set — excluded same-repo

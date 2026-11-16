@@ -3,6 +3,22 @@
 Compatibility records for the documentation portal. This file states what was actually
 tested rather than what is theoretically supported.
 
+## Infrastructure handbook — 2026-11-16
+
+The portal now has a task-oriented **Infrastructure handbook** landing page,
+persistent header link, scale guides, per-tool quick starts, credential/access
+instructions, troubleshooting, and links into the owning service references.
+Canonical guides remain in the superproject and tool directories; portal content
+is navigation-only. The assembler supports explicitly covered tracked Markdown
+navigation hubs under `content/` and rejects generated provenance/source-availability
+as tracked content.
+
+Local-source validation passed with **56 declared source documents**, **81 HTML
+files**, zero Doxygen warnings, and zero validation issues. Coverage includes the
+new handbook and tool overview mappings. This is not a publication claim; the
+reviewed portal and integrated superproject revisions still need their normal
+commit/push and separate publication decisions.
+
 ## Tested combination
 
 | Input | Version | Status |

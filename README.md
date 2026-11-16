@@ -5,9 +5,10 @@ Aggregated documentation portal for the Heretical workspace, built with
 theme, published as a prebuilt static site on GitHub project Pages.
 
 **Status:** local validation and the historical initial Pages deployment have passed.
-Woodpecker structural and full-validation workflows are implemented but await live
-repository/agent acceptance. GitHub Actions is now a manual-only Pages publication adapter;
-its revised revision has not been dispatched.
+Woodpecker structural and full-validation workflows are implemented; the desktop
+organization agent is healthy, but these site pipelines have not been executed live.
+GitHub Actions is now a manual-only Pages publication adapter; its revised revision
+has not been dispatched.
 
 | Field | Value |
 |---|---|
@@ -28,6 +29,11 @@ outside the published set to canonical exact-revision source URLs. It stores no 
 documentation of its own beyond portal navigation, branding, and configuration.
 
 ## Quick start
+
+The searchable **Infrastructure handbook** covers first-clone setup,
+desktop/homelab/distributed scales, GitHub OAuth and agent credentials, Kan,
+ntfy, backups, and troubleshooting. `content/infrastructure.md` is its navigation
+hub; canonical guides remain in the owning workspace/tool repositories.
 
 ```sh
 eng/restore.sh          # pinned Doxygen + theme (npm ci) + exact source revisions

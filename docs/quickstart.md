@@ -44,7 +44,13 @@ document:
 3. Link to it from `content/index.md` if it should appear on the landing page.
 4. Run `eng/validate.sh`; coverage and link checks confirm it is published and reachable.
 
-Never add a document by crawling a repository: coverage is explicit by design.
+Portal-owned navigation hubs belong in `content/<topic>.md` and may link only to
+manifest-covered source pages or other tracked content pages. `content/index.md` is
+required; `provenance.md` and `source-availability.md` are generated and cannot be
+tracked navigation pages. The assembler copies each tracked Markdown navigation page
+and includes it in coverage. Canonical operator guides stay in their owning repository.
+
+Never add a source document by crawling a repository: coverage is explicit by design.
 
 ## Previewing uncommitted workspace changes
 

@@ -24,7 +24,8 @@ leaving every document canonical in its owning repository.
 
 This repository owns:
 
-- Portal-only content: the landing page (`content/index.md`), navigation, and minimal
+- Portal-only content: the landing page (`content/index.md`), topic navigation hubs
+  such as `content/infrastructure.md`, navigation, and minimal
   branding (`assets/`).
 - Doxygen configuration (`Doxyfile`, `Doxyfile.fixture`, `doxygen/`) and the non-published
   C# extraction fixture (`tests/fixture/`).
@@ -44,7 +45,7 @@ repository, or superproject submodule registration.
 documentation/
 ├── Doxyfile                 # Published portal entry; includes doxygen/*.cfg
 ├── Doxyfile.fixture         # Non-published C# extraction fixture
-├── content/index.md         # Portal landing page (Doxygen main page)
+├── content/                 # Landing page and explicitly covered navigation hubs
 ├── doxygen/                 # common.cfg, html.cfg, branded header.html
 ├── assets/                  # custom.css, favicon.svg (minimal, product-owned)
 ├── docs/                    # requirements, build, quickstart, deployment, compatibility

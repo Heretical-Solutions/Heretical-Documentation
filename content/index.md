@@ -10,6 +10,30 @@ Navigate with the tree on the left or the search box above. The
 [source provenance](provenance.md) page records the exact revisions used to build a given
 publication.
 
+## Start here: infrastructure handbook
+
+Set up and operate the development suite without guessing which account, token,
+or command belongs to each tool. These guides answer the common first-clone
+questions about GitHub organization approval, OAuth Apps, private repository
+access, Woodpecker agent registration, webhooks, and local containers.
+
+- **[Infrastructure handbook](infrastructure.md)**
+- [Choose desktop, homelab, or distributed](workspace/docs/guides/infrastructure/scale-selection.md)
+- **[Desktop quick start](workspace/docs/guides/infrastructure/desktop-quickstart.md)**
+- [Woodpecker: OAuth, agents, and first build](workspace/docs/guides/infrastructure/woodpecker-quickstart.md)
+- [Credentials and access](workspace/docs/guides/infrastructure/credentials-and-access.md)
+- [Daily operations](workspace/docs/guides/infrastructure/daily-operations.md)
+- [Troubleshooting](workspace/docs/guides/infrastructure/troubleshooting.md)
+- [Add a product build pipeline](workspace/docs/guides/infrastructure/product-pipelines.md)
+
+### Tools and lifecycle
+
+- [Kan quick start](workspace/docs/guides/infrastructure/kan-quickstart.md)
+- [ntfy quick start](workspace/docs/guides/infrastructure/ntfy-quickstart.md)
+- [Homelab guide](workspace/docs/guides/infrastructure/homelab.md)
+- [Distributed guide](workspace/docs/guides/infrastructure/distributed.md)
+- [Backups and recovery](workspace/docs/guides/infrastructure/backup-and-recovery.md)
+
 ## Workspace
 
 Architecture, contribution rules, policies, and the repository catalog maintained in the
@@ -45,11 +69,26 @@ Heretical Development workspace.
 - [Documentation site policy](workspace/docs/documentation-site.md)
 - [Internal development blog policy](workspace/docs/development-blog.md)
 
-### Infrastructure
+### Infrastructure reference
 
-- [Kan.bn planning infrastructure](workspace/docs/infrastructure/kan.md)
-- [ntfy notification infrastructure](workspace/docs/infrastructure/ntfy.md)
-- [Woodpecker CI infrastructure](workspace/docs/infrastructure/woodpecker.md)
+- [Infrastructure index by tool](workspace/infrastructure/overview.md)
+- [Scale orchestration and command contract](workspace/infrastructure/suite/overview.md)
+- [Desktop profile](workspace/infrastructure/suite/scales/desktop.md)
+- [Homelab profile](workspace/infrastructure/suite/scales/homelab.md)
+- [Distributed profile](workspace/infrastructure/suite/scales/distributed.md)
+- [Woodpecker deployment reference](workspace/infrastructure/woodpecker/overview.md)
+- [Woodpecker operations](workspace/infrastructure/woodpecker/docs/operations.md)
+- [Kan deployment reference](workspace/infrastructure/kan/overview.md)
+- [Kan board conventions](workspace/infrastructure/kan/docs/board-conventions.md)
+- [Kan operations](workspace/infrastructure/kan/docs/operations.md)
+- [Kan MCP setup](workspace/infrastructure/kan/docs/mcp.md)
+- [ntfy deployment reference](workspace/infrastructure/ntfy/overview.md)
+- [ntfy clients and identities](workspace/infrastructure/ntfy/docs/clients.md)
+- [ntfy operations](workspace/infrastructure/ntfy/docs/operations.md)
+- [Backup path registry and exports](workspace/infrastructure/backup/overview.md)
+- [Kan.bn planning policy](workspace/docs/infrastructure/kan.md)
+- [ntfy notification policy](workspace/docs/infrastructure/ntfy.md)
+- [Woodpecker CI policy](workspace/docs/infrastructure/woodpecker.md)
 
 ## Products
 
